@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -42,18 +44,27 @@ public class UserEntity {
     private String cpf;
 
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true)
     @Pattern(regexp = "^(\\d{2})?\\s?9\\d{4}-?\\d{4}$", message = "Número de celular inválido. Use o formato XX 9XXXX-XXXX ou XX 9XXXXXXXX")
     private String phoneNumber;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(name = "user_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Embedded
-    private ParticipantProfileEntity participantProfileEntity;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+    @JoinColumn(name = "wallet_id")
+    @Column(name = "user_wallet")
+    private UserWalletEntity userWalletEntity;
 
-    @Embedded
-    private EventOrganizerProfileEntity eventOrganizerProfile;
+    @OneToMany(mappedBy = "organizer", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<EventEntity> events;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "withdrawal_id")
+    @Column(name = "cash_withdrawal")
+    private List<CashWithdrawalEntity> cashWithdrawal;
+
+    private List<TicketEntity> tickets;
 }
