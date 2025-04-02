@@ -1,10 +1,7 @@
 package com.eventify.eventify.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,16 +52,19 @@ public class UserEntity {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     @JoinColumn(name = "wallet_id")
-    @Column(name = "user_wallet")
     private UserWalletEntity userWalletEntity;
 
     @OneToMany(mappedBy = "organizer", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<EventEntity> events;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "withdrawal_id")
-    @Column(name = "cash_withdrawal")
     private List<CashWithdrawalEntity> cashWithdrawal;
 
+
     private List<TicketEntity> tickets;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Gender gender;
 }
