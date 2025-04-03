@@ -1,4 +1,4 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.user.model.entity;
 
 public enum Gender {
     MASCULINO("Masculino"),

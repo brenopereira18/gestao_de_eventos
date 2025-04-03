@@ -1,4 +1,4 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.event.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

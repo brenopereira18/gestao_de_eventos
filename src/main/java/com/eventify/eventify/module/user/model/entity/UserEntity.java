@@ -1,5 +1,8 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.user.model.entity;
 
+import com.eventify.eventify.module.cashWithdrawal.model.entity.CashWithdrawalEntity;
+import com.eventify.eventify.module.event.model.entity.EventEntity;
+import com.eventify.eventify.module.ticket.model.entity.TicketEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

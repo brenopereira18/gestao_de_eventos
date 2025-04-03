@@ -1,4 +1,4 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.event.model.entity;
 
 public enum EventReview {
     PENDENTE,
