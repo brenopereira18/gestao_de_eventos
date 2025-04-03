@@ -1,5 +1,6 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.cashWithdrawal.model.entity;
 
+import com.eventify.eventify.module.user.model.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

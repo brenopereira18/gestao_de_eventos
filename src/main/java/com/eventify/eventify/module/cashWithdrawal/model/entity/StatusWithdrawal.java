@@ -1,4 +1,4 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.cashWithdrawal.model.entity;
 
 public enum StatusWithdrawal {
     REQUESTED,

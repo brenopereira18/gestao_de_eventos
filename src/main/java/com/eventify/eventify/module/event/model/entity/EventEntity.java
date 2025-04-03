@@ -1,5 +1,8 @@
-package com.eventify.eventify.model.entity;
+package com.eventify.eventify.module.event.model.entity;
 
+import com.eventify.eventify.module.sectorAndLot.model.entity.LotEntity;
+import com.eventify.eventify.module.sectorAndLot.model.entity.SectorEntity;
+import com.eventify.eventify.module.user.model.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -47,6 +50,9 @@ public class EventEntity {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SectorEntity> sectors;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LotEntity> lots;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     @JoinColumn(name = "address_id", nullable = false)
