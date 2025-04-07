@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -58,14 +59,14 @@ public class UserEntity {
     private UserWalletEntity userWalletEntity;
 
     @OneToMany(mappedBy = "organizer", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<EventEntity> events;
+    private List<EventEntity> events = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "withdrawal_id")
-    private List<CashWithdrawalEntity> cashWithdrawal;
+    private List<CashWithdrawalEntity> cashWithdrawal = new ArrayList<>();
 
-
-    private List<TicketEntity> tickets;
+    @OneToMany
+    private List<TicketEntity> tickets = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @NotNull

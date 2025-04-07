@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -31,8 +32,8 @@ public class FinancialOfTheEventEntity {
     private BigDecimal totalValueFees = BigDecimal.ZERO;
 
     @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
-    private Map<Long, BigDecimal> collectionBySector;
+    private Map<Long, BigDecimal> collectionBySector = new HashMap<>();
 
     @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
-    private Map<Long, BigDecimal> collectionByLot;
+    private Map<Long, BigDecimal> collectionByLot = new HashMap<>();
 }
