@@ -2,6 +2,7 @@ package com.eventify.eventify.module.event.model.entity;
 
 import com.eventify.eventify.module.sectorAndLot.model.entity.LotEntity;
 import com.eventify.eventify.module.sectorAndLot.model.entity.SectorEntity;
+import com.eventify.eventify.module.ticket.model.entity.DiscountCouponEntity;
 import com.eventify.eventify.module.user.model.entity.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -11,8 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,10 +52,14 @@ public class EventEntity {
     private EventCategory eventCategory;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SectorEntity> sectors;
+    private List<SectorEntity> sectors = new ArrayList<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LotEntity> lots;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DiscountCouponEntity> discountCoupons = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     @JoinColumn(name = "address_id", nullable = false)
@@ -71,7 +78,7 @@ public class EventEntity {
     private UserEntity organizer;
 
     @Enumerated(EnumType.STRING)
-    private EventReview eventReview = EventReview.PENDENTE;
+    private EventReview eventReview = EventReview.PENDING;
 
     @Future
     @Column(name = "sales_end_date", nullable = false)
@@ -81,4 +88,8 @@ public class EventEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     @JoinColumn(name = "financial_id", nullable = false)
     private FinancialOfTheEventEntity financialOfTheEventEntity;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }
