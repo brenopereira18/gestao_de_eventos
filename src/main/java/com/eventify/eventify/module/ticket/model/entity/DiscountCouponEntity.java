@@ -38,8 +38,8 @@ public class DiscountCouponEntity {
     private boolean isPercentageDiscount;
 
     @Future(message = "A data de validade deve ser no futuro")
-    @Column(name = "coupon_validate", nullable = false)
-    private LocalDateTime couponValidate;
+    @Column(name = "expiry_date", nullable = false)
+    private LocalDateTime expiryDate;
 
     @NotNull
     @Positive(message = "A quantidade de cupons deve ser maior que zero")
@@ -58,4 +58,23 @@ public class DiscountCouponEntity {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    public void decrementAmountOfCouponAvailable() {
+        if (this.availableQuantity <= 0) {
+            throw new IllegalStateException("Cupom esgotado");
+        }
+        this.availableQuantity--;
+    }
+
+    public void incrementAmountOfCouponAvailable() {
+        if (this.availableQuantity >= this.totalQuantity) {
+            throw new IllegalStateException("Quantidade disponível não pode exceder o total");
+        }
+        this.availableQuantity++;
+    }
+
+    @AssertTrue(message = "O cupom deve estar dentro da validade e com estoque disponível")
+    public boolean isValid() {
+        return !LocalDateTime.now().isAfter(this.expiryDate) && this.availableQuantity > 0;
+    }
 }
