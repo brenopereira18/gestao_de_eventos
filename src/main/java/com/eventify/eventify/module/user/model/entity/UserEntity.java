@@ -71,4 +71,6 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private Gender gender;
+
+
 }
