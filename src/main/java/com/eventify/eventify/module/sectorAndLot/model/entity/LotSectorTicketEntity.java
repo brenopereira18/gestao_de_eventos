@@ -44,4 +44,12 @@ public class LotSectorTicketEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lot_id", nullable = false)
     private LotEntity lot;
+
+    public void decrementAvailableTickets() {
+        if (this.numberOfTicketsAvailable <= 0) {
+            throw new IllegalStateException("Não há ingressos para disponiveis para este setor/lote");
+        }
+        this.numberOfTicketsAvailable--;
+        this.lot.setNumberOfTicketsSold(this.lot.getNumberOfTicketsSold() + 1);
+    }
 }
