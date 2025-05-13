@@ -1,6 +1,7 @@
 package com.eventify.eventify.module.ticket.model.entity;
 
 import com.eventify.eventify.module.event.model.entity.EventEntity;
+import com.eventify.eventify.module.event.model.entity.FinancialOfTheEventEntity;
 import com.eventify.eventify.module.sectorAndLot.model.entity.LotSectorTicketEntity;
 import com.eventify.eventify.module.serviceFee.model.entity.ServiceFeeEntity;
 import com.eventify.eventify.module.user.model.entity.Gender;
@@ -65,6 +66,10 @@ public class TicketEntity {
     @JoinColumn(name = "lot_sector_ticket_id", nullable = false)
     @NotNull(message = "O lote/setor do ingresso é obrigatório")
     private LotSectorTicketEntity lotSectorTicket;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "financial_event_id")
+    private FinancialOfTheEventEntity financialEvent;
 
     @Column(name = "ticket_code", unique = true, length = 50)
     @NotBlank(message = "Código do ingresso é obrigatório")

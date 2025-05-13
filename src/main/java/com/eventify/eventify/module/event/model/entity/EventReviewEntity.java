@@ -34,7 +34,7 @@ public class EventReviewEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "event_review")
-    private EventReview eventReview;
+    private StatusReview statusReview;
 
     private String Description;
 

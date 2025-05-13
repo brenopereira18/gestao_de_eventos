@@ -1,6 +1,6 @@
 package com.eventify.eventify.module.event.model.entity;
 
-public enum EventReview {
+public enum StatusReview {
     PENDING,
     APPROVED,
     REJECTED
