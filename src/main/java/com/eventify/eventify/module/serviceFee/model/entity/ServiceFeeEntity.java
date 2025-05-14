@@ -1,6 +1,7 @@
 package com.eventify.eventify.module.serviceFee.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +18,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ServiceFeeEntity {
 
+    @Id
+    private Long id = 1L;
     private BigDecimal serviceFee = BigDecimal.valueOf(0.1);
 }

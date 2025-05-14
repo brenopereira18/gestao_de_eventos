@@ -26,7 +26,7 @@ public class CashWithdrawalEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "cashWithdrawal", optional = false)
+    @ManyToOne(optional = false)
     private UserEntity user;
 
     @Column(name = "amount_withdrawn" , nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")

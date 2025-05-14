@@ -9,7 +9,7 @@ services:
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=2001
-            - POSTGRES_DB=eventif_db
+            - POSTGRES_DB=eventify_db
         volumes:
             - postgres_data:/var/lib/postgresql/data
 volumes:

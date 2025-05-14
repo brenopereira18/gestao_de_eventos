@@ -49,12 +49,11 @@ public class UserEntity {
     @Pattern(regexp = "^(\\d{2})?\\s?9\\d{4}-?\\d{4}$", message = "Número de celular inválido. Use o formato XX 9XXXX-XXXX ou XX 9XXXXXXXX")
     private String phoneNumber;
 
-    @NotBlank
-    @Column(name = "user_type", nullable = false)
+    @Column(name = "user_type")
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private UserType userType = UserType.CLIENT;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet_id")
     private UserWalletEntity userWalletEntity;
 
@@ -71,6 +70,4 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private Gender gender;
-
-
 }
