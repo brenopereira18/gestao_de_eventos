@@ -1,6 +1,7 @@
 package com.eventify.eventify.module.event.model.entity;
 
 import com.eventify.eventify.module.ticket.model.entity.TicketEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "finacial_event")
+@Table(name = "financial_event")
 @Data
 @Builder
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class FinancialOfTheEventEntity {
     private Long id;
 
     @OneToOne(mappedBy = "financialOfTheEventEntity")
+    @JsonBackReference
     private EventEntity event;
 
     @Column(name = "total_amount",columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
