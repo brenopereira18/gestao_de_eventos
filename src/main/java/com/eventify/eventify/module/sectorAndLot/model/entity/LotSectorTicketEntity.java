@@ -1,5 +1,10 @@
 package com.eventify.eventify.module.sectorAndLot.model.entity;
 
+import com.eventify.eventify.module.event.model.entity.EventEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -44,6 +49,11 @@ public class LotSectorTicketEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lot_id", nullable = false)
     private LotEntity lot;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", nullable = false)
+    @JsonBackReference
+    private EventEntity event;
 
     public void decrementAvailableTickets() {
         if (this.numberOfTicketsAvailable <= 0) {

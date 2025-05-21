@@ -1,6 +1,7 @@
 package com.eventify.eventify.module.sectorAndLot.model.entity;
 
 import com.eventify.eventify.module.event.model.entity.EventEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -45,6 +46,7 @@ public class LotEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
+    @JsonBackReference
     private EventEntity event;
 
     @Column(name = "total_number_tickets")
@@ -62,29 +64,37 @@ public class LotEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public boolean isActive() {
+    @AssertTrue(message = "A data final deve ser após a data inicial")
+    public boolean isDateRangeValid() {
+        return this.endDate.isAfter(this.startDate);
+    }
+    /*
+    public boolean isAvailableForSale(LocalDateTime eventSalesEndDate) {
         LocalDateTime now = LocalDateTime.now();
-        return !now.isBefore(startDate) && !now.isAfter(endDate);
+
+        boolean withinLotPeriod = !now.isBefore(startDate) && !now.isAfter(endDate);
+
+        boolean beforeEventSalesEnd = now.isBefore(eventSalesEndDate);
+
+        boolean hasTickets = hasAvailableTicket();
+
+        return withinLotPeriod && beforeEventSalesEnd && hasTickets;
     }
 
     public boolean hasAvailableTicket() {
         return this.numberOfTicketsSold < this.totalNumberOfTickets;
     }
 
-    @AssertTrue(message = "O lote não está valido para venda")
-    public boolean isValid() {
-        return isActive() && hasAvailableTicket();
-    }
-
     @PreUpdate
     @PrePersist
     public void updateStatus() {
-        if (LocalDateTime.now().isBefore(this.startDate)) {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(this.startDate)) {
             this.statusLot = StatusLot.PENDING;
         } else if (isValid()) {
             this.statusLot = StatusLot.ACTIVE;
         } else {
             this.statusLot = StatusLot.INACTIVE;
         }
-    }
+    } */
 }

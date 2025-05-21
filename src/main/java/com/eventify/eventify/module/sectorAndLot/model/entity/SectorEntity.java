@@ -1,6 +1,7 @@
 package com.eventify.eventify.module.sectorAndLot.model.entity;
 
 import com.eventify.eventify.module.event.model.entity.EventEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class SectorEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
+    @JsonBackReference
     private EventEntity event;
 
     @Column(nullable = false, length = 100)

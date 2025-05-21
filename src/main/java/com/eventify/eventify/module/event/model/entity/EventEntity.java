@@ -1,9 +1,11 @@
 package com.eventify.eventify.module.event.model.entity;
 
 import com.eventify.eventify.module.sectorAndLot.model.entity.LotEntity;
+import com.eventify.eventify.module.sectorAndLot.model.entity.LotSectorTicketEntity;
 import com.eventify.eventify.module.sectorAndLot.model.entity.SectorEntity;
 import com.eventify.eventify.module.ticket.model.entity.DiscountCouponEntity;
 import com.eventify.eventify.module.user.model.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;
@@ -53,19 +55,35 @@ public class EventEntity {
     private EventCategory eventCategory;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonManagedReference
     private List<SectorEntity> sectors = new ArrayList<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonManagedReference
     private List<LotEntity> lots = new ArrayList<>();
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @Builder.Default
+    @JsonManagedReference
+    private List<LotSectorTicketEntity> lotSectorTickets = new ArrayList<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<DiscountCouponEntity> discountCoupons = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
-    @JoinColumn(name = "address_id", nullable = false)
-    @NotNull
-    private AddressEntity address;
+    @Column(nullable = false)
+    @NotBlank
+    private String address;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String city;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String state;
 
     @Column(nullable = false)
     @NotNull
@@ -76,12 +94,14 @@ public class EventEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "organizer_id", nullable = false)
+    @JsonManagedReference
     private UserEntity organizer;
 
     @Enumerated(EnumType.STRING)
     private StatusReview statusReview = StatusReview.PENDING;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<EventReviewEntity> eventReviews = new ArrayList<>();
 
     @Future
@@ -91,6 +111,7 @@ public class EventEntity {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     @JoinColumn(name = "financial_id", nullable = false)
+    @JsonManagedReference
     private FinancialOfTheEventEntity financialOfTheEventEntity;
 
     @CreationTimestamp
@@ -110,6 +131,16 @@ public class EventEntity {
     public void removeSector(SectorEntity sector) {
         this.sectors.remove(sector);
         sector.setEvent(null);
+    }
+
+    public void addLotSectorTicket(LotSectorTicketEntity lotSectorTicket) {
+        this.lotSectorTickets.add(lotSectorTicket);
+        lotSectorTicket.setEvent(this);
+    }
+
+    public void removeLotSectorTicket(LotSectorTicketEntity lotSectorTicket) {
+        this.lotSectorTickets.remove(lotSectorTicket);
+        lotSectorTicket.setEvent(null);
     }
 
     public void addLot(LotEntity lot) {
