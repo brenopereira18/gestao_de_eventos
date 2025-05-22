@@ -1,9 +1,7 @@
 package com.eventify.eventify.module.event.controller;
 
-import com.eventify.eventify.module.event.model.dto.CreateEventDTO;
-import com.eventify.eventify.module.event.model.entity.EventEntity;
+import com.eventify.eventify.module.event.model.dto.EventResponseDTO;
 import com.eventify.eventify.module.event.service.EventService;
-import com.eventify.eventify.module.user.model.entity.Gender;
 import com.eventify.eventify.module.user.model.entity.UserEntity;
 import com.eventify.eventify.module.user.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -25,9 +23,9 @@ public class EventController {
     private UserRepository userRepository;
 
     @PostMapping("/")
-    public ResponseEntity<EventEntity> createEvent(@Valid @RequestBody CreateEventDTO createEventDTO) {
+    public ResponseEntity<EventResponseDTO> createEvent(@Valid @RequestBody EventResponseDTO eventResponseDTO) {
         UserEntity user = userRepository.findByCpf("127.890.938-24").orElseThrow();
-        EventEntity event = eventService.createEvent(createEventDTO, user);
+        EventResponseDTO event = eventService.createEvent(eventResponseDTO, user);
         return ResponseEntity.ok().body(event);
     }
 }
