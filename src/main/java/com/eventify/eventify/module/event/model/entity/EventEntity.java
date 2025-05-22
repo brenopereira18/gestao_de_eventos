@@ -64,7 +64,7 @@ public class EventEntity {
     @JsonManagedReference
     private List<LotEntity> lots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @JsonManagedReference
     private List<LotSectorTicketEntity> lotSectorTickets = new ArrayList<>();
@@ -94,7 +94,6 @@ public class EventEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "organizer_id", nullable = false)
-    @JsonManagedReference
     private UserEntity organizer;
 
     @Enumerated(EnumType.STRING)
