@@ -3,7 +3,6 @@ package com.eventify.eventify.module.user.model.entity;
 import com.eventify.eventify.module.cashWithdrawal.model.entity.CashWithdrawalEntity;
 import com.eventify.eventify.module.event.model.entity.EventEntity;
 import com.eventify.eventify.module.ticket.model.entity.TicketEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -59,7 +58,6 @@ public class UserEntity {
     private UserWalletEntity userWalletEntity;
 
     @OneToMany(mappedBy = "organizer", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonBackReference
     private List<EventEntity> events = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

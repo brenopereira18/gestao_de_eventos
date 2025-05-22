@@ -1,11 +1,14 @@
 package com.eventify.eventify.module.event.model.dto;
 
 import com.eventify.eventify.module.event.model.entity.EventCategory;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record CreateEventDTO(
+@Builder
+public record EventResponseDTO(
+    Long id,
     String name,
     LocalDateTime startDate,
     LocalDateTime endDate,
@@ -14,7 +17,7 @@ public record CreateEventDTO(
     String address,
     String city,
     String state,
-    List<CreateSectorDTO> sectors,
-    List<CreateLotDTO> lots,
-    List<CreateTicketPriceDTO> ticketPrices
+    List<SectorResponseDTO> sectors,
+    List<LotResponseDTO> lots,
+    List<TicketPriceResponseDTO> ticketPrices
 ) {}
