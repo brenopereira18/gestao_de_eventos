@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record EventResponseDTO(
+public record CreateEventResponseDTO(
     Long id,
     String name,
     LocalDateTime startDate,
@@ -17,7 +17,7 @@ public record EventResponseDTO(
     String address,
     String city,
     String state,
-    List<SectorResponseDTO> sectors,
-    List<LotResponseDTO> lots,
-    List<TicketPriceResponseDTO> ticketPrices
+    List<SectorCreateEventDTO> sectors,
+    List<LotCreateEventDTO> lots,
+    List<TicketPriceCreateEventDTO> ticketPrices
 ) {}
