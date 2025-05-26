@@ -1,12 +1,13 @@
 package com.eventify.eventify.module.event.service.mapper;
 
 import com.eventify.eventify.exceptions.ResourceNotFoundException;
-import com.eventify.eventify.module.event.model.dto.LotResponseDTO;
-import com.eventify.eventify.module.event.model.dto.SectorResponseDTO;
-import com.eventify.eventify.module.event.model.dto.TicketPriceResponseDTO;
-import com.eventify.eventify.module.event.model.dto.EventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.LotCreateEventDTO;
+import com.eventify.eventify.module.event.model.dto.SectorCreateEventDTO;
+import com.eventify.eventify.module.event.model.dto.TicketPriceCreateEventDTO;
+import com.eventify.eventify.module.event.model.dto.CreateEventResponseDTO;
 import com.eventify.eventify.module.event.model.entity.EventEntity;
 import com.eventify.eventify.module.event.model.entity.FinancialOfTheEventEntity;
+import com.eventify.eventify.module.event.model.entity.StatusReview;
 import com.eventify.eventify.module.sectorAndLot.model.entity.LotEntity;
 import com.eventify.eventify.module.sectorAndLot.model.entity.LotSectorTicketEntity;
 import com.eventify.eventify.module.sectorAndLot.model.entity.SectorEntity;
@@ -16,9 +17,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class EventMapper {
+public class EventCreateMapper {
 
-    public EventEntity toEntity(EventResponseDTO dto, FinancialOfTheEventEntity financial, UserEntity organizer) {
+    public EventEntity toEntity(CreateEventResponseDTO dto, FinancialOfTheEventEntity financial, UserEntity organizer) {
         EventEntity event = EventEntity.builder()
             .name(dto.name())
             .startDate(dto.startDate())
@@ -47,7 +48,7 @@ public class EventMapper {
                 return lot;
             }).toList();
 
-        for (TicketPriceResponseDTO ticketPrice : dto.ticketPrices()) {
+        for (TicketPriceCreateEventDTO ticketPrice : dto.ticketPrices()) {
             SectorEntity sector = findSectorByName(sectors, ticketPrice.sectorName());
             LotEntity lot = findLotByName(lots, ticketPrice.lotName());
 
@@ -64,8 +65,8 @@ public class EventMapper {
         return event;
     }
 
-    public EventResponseDTO toResponse(EventEntity entity) {
-        return EventResponseDTO.builder()
+    public CreateEventResponseDTO toResponse(EventEntity entity) {
+        return CreateEventResponseDTO.builder()
             .id(entity.getId())
             .name(entity.getName())
             .startDate(entity.getStartDate())
@@ -76,13 +77,13 @@ public class EventMapper {
             .city(entity.getCity())
             .state(entity.getState())
             .sectors(entity.getSectors().stream()
-                .map(s -> new SectorResponseDTO(s.getId(), s.getName()))
+                .map(s -> new SectorCreateEventDTO(s.getId(), s.getName()))
                 .toList())
             .lots(entity.getLots().stream()
-                .map(l -> new LotResponseDTO(l.getId(), l.getName(), l.getStartDate(), l.getEndDate(), l.getTotalNumberOfTickets()))
+                .map(l -> new LotCreateEventDTO(l.getId(), l.getName(), l.getStartDate(), l.getEndDate(), l.getTotalNumberOfTickets()))
                 .toList())
             .ticketPrices(entity.getLotSectorTickets().stream()
-                .map(t -> new TicketPriceResponseDTO(t.getId(), t.getTicketForMen(), t.getTicketForWomen(), t.getSector().getName(), t.getLot().getName()))
+                .map(t -> new TicketPriceCreateEventDTO(t.getId(), t.getTicketForMen(), t.getTicketForWomen(), t.getSector().getName(), t.getLot().getName()))
                 .toList())
             .build();
     }
