@@ -1,10 +1,7 @@
 package com.eventify.eventify.module.event.service.mapper;
 
 import com.eventify.eventify.exceptions.ResourceNotFoundException;
-import com.eventify.eventify.module.event.model.dto.LotCreateEventDTO;
-import com.eventify.eventify.module.event.model.dto.SectorCreateEventDTO;
-import com.eventify.eventify.module.event.model.dto.TicketPriceCreateEventDTO;
-import com.eventify.eventify.module.event.model.dto.CreateEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.*;
 import com.eventify.eventify.module.event.model.entity.EventEntity;
 import com.eventify.eventify.module.event.model.entity.FinancialOfTheEventEntity;
 import com.eventify.eventify.module.event.model.entity.StatusReview;
@@ -19,7 +16,7 @@ import java.util.List;
 @Component
 public class EventCreateMapper {
 
-    public EventEntity toEntity(CreateEventResponseDTO dto, FinancialOfTheEventEntity financial, UserEntity organizer) {
+    public EventEntity toEntity(CreateEventRequestDTO dto, FinancialOfTheEventEntity financial, UserEntity organizer) {
         EventEntity event = EventEntity.builder()
             .name(dto.name())
             .startDate(dto.startDate())
@@ -32,11 +29,14 @@ public class EventCreateMapper {
             .state(dto.state())
             .financialOfTheEventEntity(financial)
             .organizer(organizer)
+            .statusReview(StatusReview.PENDING)
             .build();
 
         List<SectorEntity> sectors = dto.sectors().stream()
             .map(s -> {
-                SectorEntity sector = SectorEntity.builder().name(s.name()).event(event).build();
+                SectorEntity sector = new SectorEntity();
+                sector.setName(s.name());
+                sector.setEvent(event);
                 event.addSector(sector);
                 return sector;
             }).toList();
@@ -48,26 +48,26 @@ public class EventCreateMapper {
                 return lot;
             }).toList();
 
-        for (TicketPriceCreateEventDTO ticketPrice : dto.ticketPrices()) {
-            SectorEntity sector = findSectorByName(sectors, ticketPrice.sectorName());
-            LotEntity lot = findLotByName(lots, ticketPrice.lotName());
+        dto.ticketPrices().forEach(ticket -> {
+            SectorEntity sector = findSectorByName(sectors, ticket.sectorName());
+            LotEntity lot = findLotByName(lots, ticket.lotName());
 
             LotSectorTicketEntity lotSectorTicket = LotSectorTicketEntity.builder()
                 .sector(sector)
                 .lot(lot)
-                .ticketForMen(ticketPrice.priceForMen())
-                .ticketForWomen(ticketPrice.priceForWomen())
+                .ticketForMen(ticket.priceForMen())
+                .ticketForWomen(ticket.priceForWomen())
                 .build();
 
             event.addLotSectorTicket(lotSectorTicket);
-        }
+            sector.getLotSectorTickets().add(lotSectorTicket);
+        });
 
         return event;
     }
 
-    public CreateEventResponseDTO toResponse(EventEntity entity) {
-        return CreateEventResponseDTO.builder()
-            .id(entity.getId())
+    public GetEventResponseDTO toResponse(EventEntity entity) {
+        return GetEventResponseDTO.builder()
             .name(entity.getName())
             .startDate(entity.getStartDate())
             .endDate(entity.getEndDate())
@@ -77,13 +77,16 @@ public class EventCreateMapper {
             .city(entity.getCity())
             .state(entity.getState())
             .sectors(entity.getSectors().stream()
-                .map(s -> new SectorCreateEventDTO(s.getId(), s.getName()))
-                .toList())
-            .lots(entity.getLots().stream()
-                .map(l -> new LotCreateEventDTO(l.getId(), l.getName(), l.getStartDate(), l.getEndDate(), l.getTotalNumberOfTickets()))
-                .toList())
-            .ticketPrices(entity.getLotSectorTickets().stream()
-                .map(t -> new TicketPriceCreateEventDTO(t.getId(), t.getTicketForMen(), t.getTicketForWomen(), t.getSector().getName(), t.getLot().getName()))
+                .map(sector -> SectorResponseDTO.builder()
+                    .name(sector.getName())
+                    .lotSectorTickets(sector.getLotSectorTickets().stream()
+                        .map(ticket -> TicketPriceResponseDTO.builder()
+                            .lotName(ticket.getLot().getName())
+                            .priceForMen(ticket.getTicketForMen())
+                            .priceForWomen(ticket.getTicketForWomen())
+                            .build())
+                        .toList())
+                    .build())
                 .toList())
             .build();
     }

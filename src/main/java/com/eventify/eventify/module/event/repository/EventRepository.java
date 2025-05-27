@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
     Optional<EventEntity> findById(Long id);
-    Optional<EventEntity> findByStatusReview(StatusReview statusReview);
+    List<EventEntity> findByStatusReview(StatusReview statusReview);
 
     @Query(value = """
         SELECT * FROM events

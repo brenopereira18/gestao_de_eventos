@@ -1,8 +1,11 @@
 package com.eventify.eventify.module.event.controller;
 
-import com.eventify.eventify.module.event.model.dto.CreateEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.CreateEventRequestDTO;
 import com.eventify.eventify.module.event.model.dto.GetEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.GetPendingEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.UpdateEventRequestDTO;
 import com.eventify.eventify.module.event.model.entity.EventCategory;
+import com.eventify.eventify.module.event.model.entity.EventEntity;
 import com.eventify.eventify.module.event.service.EventService;
 import com.eventify.eventify.module.user.model.entity.UserEntity;
 import com.eventify.eventify.module.user.repository.UserRepository;
@@ -24,9 +27,9 @@ public class EventController {
     private UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<CreateEventResponseDTO> createEvent(@Valid @RequestBody CreateEventResponseDTO createEventResponseDTO) {
+    public ResponseEntity<GetEventResponseDTO> createEvent(@Valid @RequestBody CreateEventRequestDTO createEventRequestDTO) {
         UserEntity user = userRepository.findByCpf("127.890.938-24").orElseThrow();
-        CreateEventResponseDTO event = this.eventService.createEvent(createEventResponseDTO, user);
+        GetEventResponseDTO event = this.eventService.createEvent(createEventRequestDTO, user);
         return ResponseEntity.ok().body(event);
     }
 
@@ -48,5 +51,21 @@ public class EventController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok().body(events);
+    }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<GetPendingEventResponseDTO>> getPendingEvents() {
+        List<GetPendingEventResponseDTO> events = this.eventService.getPendingEvents();
+
+        if (events.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(events);
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<GetEventResponseDTO> updateEvent(@Valid @PathVariable Long id, @RequestBody UpdateEventRequestDTO updateEventRequest) {
+        GetEventResponseDTO updateEvent = this.eventService.updateEvent(id, updateEventRequest);
+        return ResponseEntity.ok().body(updateEvent);
     }
 }

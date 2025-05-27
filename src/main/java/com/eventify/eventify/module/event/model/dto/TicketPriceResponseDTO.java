@@ -1,6 +1,9 @@
 package com.eventify.eventify.module.event.model.dto;
 
+import lombok.Builder;
+
 import java.math.BigDecimal;
 
-public record TicketPriceResponseDTO(BigDecimal priceForMen, BigDecimal priceForWomen, String sectorName, String lotName) {
+@Builder
+public record TicketPriceResponseDTO(BigDecimal priceForMen, BigDecimal priceForWomen, String lotName) {
 }
