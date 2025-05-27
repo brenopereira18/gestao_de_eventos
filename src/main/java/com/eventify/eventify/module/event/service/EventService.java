@@ -1,14 +1,18 @@
 package com.eventify.eventify.module.event.service;
 
 import com.eventify.eventify.exceptions.ResourceNotFoundException;
-import com.eventify.eventify.module.event.model.dto.CreateEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.CreateEventRequestDTO;
 import com.eventify.eventify.module.event.model.dto.GetEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.GetPendingEventResponseDTO;
+import com.eventify.eventify.module.event.model.dto.UpdateEventRequestDTO;
 import com.eventify.eventify.module.event.model.entity.EventCategory;
 import com.eventify.eventify.module.event.model.entity.EventEntity;
 import com.eventify.eventify.module.event.model.entity.FinancialOfTheEventEntity;
+import com.eventify.eventify.module.event.model.entity.StatusReview;
 import com.eventify.eventify.module.event.repository.EventRepository;
 import com.eventify.eventify.module.event.service.mapper.EventCreateMapper;
 import com.eventify.eventify.module.event.service.mapper.GetEventMapper;
+import com.eventify.eventify.module.event.service.mapper.UpdateEventMapper;
 import com.eventify.eventify.module.user.model.entity.UserEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +32,14 @@ public class EventService {
     @Autowired
     private GetEventMapper getEventMapper;
 
+    @Autowired
+    private UpdateEventMapper updateEventMapper;
+
     @Transactional
-    public CreateEventResponseDTO createEvent(CreateEventResponseDTO createEventResponseDTO, UserEntity organizer) {
+    public GetEventResponseDTO createEvent(CreateEventRequestDTO createEventRequestDTO, UserEntity organizer) {
         FinancialOfTheEventEntity financial = new FinancialOfTheEventEntity();
 
-        EventEntity event = eventCreateMapper.toEntity(createEventResponseDTO, financial, organizer);
+        EventEntity event = eventCreateMapper.toEntity(createEventRequestDTO, financial, organizer);
         financial.setEvent(event);
 
         this.eventRepository.save(event);
@@ -47,7 +54,7 @@ public class EventService {
     }
 
     public List<GetEventResponseDTO> getAllEvents(String name, String city, EventCategory eventCategory) {
-        List<EventEntity> events = eventRepository.filterEvents(
+        List<EventEntity> events = this.eventRepository.filterEvents(
             name,
             city,
             eventCategory != null ? eventCategory.name() : null);
@@ -56,5 +63,24 @@ public class EventService {
             throw  new ResourceNotFoundException("Não foi encontrado nenhum evento");
         }
         return events.stream().map(this.getEventMapper::toResponse).toList();
+    }
+
+    public List<GetPendingEventResponseDTO> getPendingEvents() {
+        List<EventEntity> events = this.eventRepository.findByStatusReview(StatusReview.PENDING);
+
+        if (events.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum evento pendente no momento");
+        }
+        return events.stream().map(this.getEventMapper::toPendingResponse).toList();
+    }
+
+    public GetEventResponseDTO updateEvent(Long id, UpdateEventRequestDTO dto) {
+        EventEntity event = this.eventRepository.findById(id).orElseThrow(() ->
+            new ResourceNotFoundException("Evento não encontrado")
+        );
+        this.updateEventMapper.updateEventFromDto(dto, event);
+        this.eventRepository.save(event);
+
+        return this.getEventMapper.toResponse(event);
     }
 }
