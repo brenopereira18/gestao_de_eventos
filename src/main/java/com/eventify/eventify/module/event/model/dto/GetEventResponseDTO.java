@@ -11,11 +11,12 @@ public record GetEventResponseDTO(
     String name,
     LocalDateTime startDate,
     LocalDateTime endDate,
+    String coverPhotoUrl,
+    String socialNetworkOfTheEvent,
     EventCategory eventCategory,
     String description,
     String address,
     String city,
     String state,
-    List<SectorResponseDTO> sectors,
-    List<TicketPriceResponseDTO> ticketPrices
+    List<SectorResponseDTO> sectors
 ) {}
